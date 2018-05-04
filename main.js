@@ -3,8 +3,8 @@ let htmlparser = require("htmlparser2");
 
 const maxSize = 10;
 const startTime = 9*60;
-let currentTime = 9*60;
-const timeInterval = 60;
+let currentTime = startTime;
+const timeInterval = 15;
 
 let rooms = {};
 
@@ -52,6 +52,9 @@ function printRoomTimes() {
         s += " ";
       }
       for (let t = startTime; t <= currentTime; t += timeInterval) {
+        if (t % 60 == 0) {
+          s += "|";
+        }
         if (rooms[k].includes(t)) {
           s += "X";
         } else {
