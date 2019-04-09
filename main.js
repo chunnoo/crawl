@@ -1,6 +1,13 @@
-let request = require("request");
-let htmlparser = require("htmlparser2");
-let domutils = require("htmlparser2").DomUtils;
+const request = require("request");
+const htmlparser = require("htmlparser2");
+const domutils = require("htmlparser2").DomUtils;
+
+const date = "10.04.2019";
+const phpsessid = "3c010917b10e69b3df1a855e70585a30";
+const simpleSAMLAuthToken = "_4d175f8d38ab9f162a9b5cd8708a155ac232200c5f";
+
+const area = 30000;
+const minSize = 5;
 
 const maxSize = 12;
 const startTime = 9*60;
@@ -26,8 +33,6 @@ function timeToString(time) {
 
   return s;
 }
-
-let date = "10.04.2019";
 
 function scanTable(table, time) {
   for (let i = 0; i < table.length; i++) {
@@ -78,14 +83,10 @@ function crawl() {
     "Content-Type": "application/x-www-form-urlencoded",
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/604.3.5 (KHTML, like Gecko) Version/11.0.1 Safari/604.3.5",
     "Cookie":
-    "PHPSESSID=3c010917b10e69b3df1a855e70585a30;			SimpleSAMLAuthToken=_4d175f8d38ab9f162a9b5cd8708a155ac232200c5f"
+    "PHPSESSID=" + phpsessid + ";SimpleSAMLAuthToken=" + simpleSAMLAuthToken
   };
 
-/*
-"SimpleSAMLAuthToken=_129f8d3d1962de1c45664df0022eb097578d747ffd;PHPSESSID=83ad716f0336c9299c16cab0db9ef0e9"
-*/
-
-  let form = "start=" + timeToString(currentTime) + "&duration=" + timeToString(timeInterval) + "&preset_date=" + date + "&area=30000&building=&roomtype=NONE&size=5&new_equipment=&preformsubmit=1";
+  let form = "start=" + timeToString(currentTime) + "&duration=" + timeToString(timeInterval) + "&preset_date=" + date + "&area=" + area + "&building=&roomtype=NONE&size=" + minSize + "&new_equipment=&preformsubmit=1";
 
   let options = {
     url: "https://tp.uio.no/ntnu/rombestilling/",
@@ -102,14 +103,9 @@ function crawl() {
     } else {
       try {
         let roomsTable = domutils.find(e => e.attribs && e.attribs.class === "possible-rooms-table", dom, true, 1);
-
         roomsTable = domutils.find(e => e.name === "tbody", roomsTable, true, 1);
-
         roomsTable = domutils.find(e => e.name === "tr", roomsTable, true, 1024);
-
         scanTable(roomsTable, currCurrTime);
-
-        //dom[4].children[3].children[3].children[1].children[3].children[1].children[1].children[17].children[1].children[1].children[3].children
       } catch(e) {
         console.log(e);
       }
@@ -118,7 +114,6 @@ function crawl() {
 
   request(options, function (err, res, bod) {
     if (!err && res.statusCode == 200) {
-      //console.log(bod);
       reqBody = bod;
 
       let parser = new htmlparser.Parser(handler);

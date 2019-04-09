@@ -1,19 +1,16 @@
 # Crawl
 
-### Changing variables
-To make the crawler work "date" has to be changed into the correct date and "headers.Cookie" has to be changed into your current website cookies.
-Optionally all constants and the "form" string can be changed.
+### Setup
+Change the constans from line 5 to line 10 in *main.js*.
+
+`phpsessid` and `simpleSAMLAuthToken` has to be set to your valid cookies from *tp.uio.no/ntnu/rombestilling*
 
 ### Running the code
-Clone the repository with
-```
-git clone https://github.com/chunnoo/crawl.git
-```
-Install dependencies with in the repository directory
+Install dependencies
 ```
 npm install
 ```
-Run the code with
+Run
 ```
 node main.js
 ```
